@@ -15,22 +15,43 @@ public class Frog implements GLEventListener {
     private float width;
     private float thickness;
 
-    private float lengthRatio;
-    private float widthRatio;
-
     private float midLength;
     private float midWidth;
 
-    Frog() {
+    private float armLength;
+    private float handLength;
+    private float palmLength;
+    private float armThickness;
+
+    private float legLength;
+    private float thighLength;
+    private float footLength;
+    private float legThickness;
+
+    private FrogState state;
+
+    public Frog() {
         this.length = 0.4f;
         this.width = 0.2f;
         this.thickness = 0.07f;
 
-        this.lengthRatio = 0.75f;
-        this.widthRatio = 0.7f;
+        final float lengthRatio = 0.75f;
+        final float widthRatio = 0.7f;
 
-        this.midLength = this.lengthRatio * this.length;
-        this.midWidth = this.widthRatio * this.width;
+        this.midLength = lengthRatio * this.length;
+        this.midWidth = widthRatio * this.width;
+
+        this.armLength = 0.1425f;
+        this.handLength = 0.1f;
+        this.palmLength = 0.05f;
+        this.armThickness = 0.03f;
+
+        this.legLength = 0.2f;
+        this.thighLength = 0.15f;
+        this.footLength = 0.1f;
+        this.legThickness = 0.04f;
+
+        this.state = new FrogState(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
     }
 
     @Override
@@ -38,25 +59,29 @@ public class Frog implements GLEventListener {
         final GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
-        glu.gluLookAt(-0.5f, 0.25f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(-0.5f, 0.15f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+        glu.gluLookAt(-0.0f, 0.0f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
         gl.glPushMatrix();
+            gl.glTranslatef(state.posX, 0.0f, state.posY);
+            gl.glRotatef(state.bodyAngle, 0.0f, 0.0f, 1.0f);
             body(gl);
 
             gl.glPushMatrix();
                 gl.glTranslatef(-midLength/2, 0.0f, midWidth/2);
                 gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                gl.glRotatef(15.0f, 1.0f, 0.0f, 0.0f);
-                limb(gl, 0.2f, 0.04f, 0.5f);
+                gl.glRotatef(state.legAngle, 1.0f, 0.0f, 0.0f);
+                limb(gl, legLength, legThickness, 0.5f);
                 gl.glPushMatrix();
-                    gl.glTranslatef(0.0f, 0.0f, 0.2f);
-                    gl.glRotatef(150.0f, 1.0f, 0.0f, 0.0f);
-                    limb(gl, 0.15f, 0.02f, 1.0f);
+                    gl.glTranslatef(0.0f, 0.0f, legLength);
+                    gl.glRotatef(180.0f-state.thighAngle, 1.0f, 0.0f, 0.0f);
+                    limb(gl, thighLength, legThickness/2, 1.0f);
                     gl.glPushMatrix();
-                        gl.glTranslatef(0.0f, 0.0f, 0.15f);
-                        gl.glRotatef(-165.0f, 1.0f, 0.0f, 0.0f);
-                        appendage(gl, 0.1f, 0.02f, 0.06f);
+                        gl.glTranslatef(0.0f, 0.0f, thighLength);
+                        gl.glRotatef(state.footAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                        appendage(gl, footLength, legThickness/2, 3*legThickness/2);
                     gl.glPopMatrix();
                 gl.glPopMatrix();
             gl.glPopMatrix();
@@ -64,16 +89,16 @@ public class Frog implements GLEventListener {
             gl.glPushMatrix();
                 gl.glTranslatef(-midLength/2, 0.0f, -midWidth/2);
                 gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                gl.glRotatef(15.0f, 1.0f, 0.0f, 0.0f);
-                limb(gl, 0.2f, 0.04f, 0.5f);
+                gl.glRotatef(state.legAngle, 1.0f, 0.0f, 0.0f);
+                limb(gl, legLength, legThickness, 0.5f);
                 gl.glPushMatrix();
-                    gl.glTranslatef(0.0f, 0.0f, 0.2f);
-                    gl.glRotatef(150.0f, 1.0f, 0.0f, 0.0f);
-                    limb(gl, 0.15f, 0.02f, 1.0f);
+                    gl.glTranslatef(0.0f, 0.0f, legLength);
+                    gl.glRotatef(180.0f-state.thighAngle, 1.0f, 0.0f, 0.0f);
+                    limb(gl, thighLength, legThickness/2, 1.0f);
                     gl.glPushMatrix();
-                        gl.glTranslatef(0.0f, 0.0f, 0.15f);
-                        gl.glRotatef(-165.0f, 1.0f, 0.0f, 0.0f);
-                        appendage(gl, 0.1f, 0.02f, 0.06f);
+                        gl.glTranslatef(0.0f, 0.0f, thighLength);
+                        gl.glRotatef(state.footAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                        appendage(gl, footLength, legThickness/2, 3*legThickness/2);
                     gl.glPopMatrix();
                 gl.glPopMatrix();
             gl.glPopMatrix();
@@ -81,16 +106,16 @@ public class Frog implements GLEventListener {
             gl.glPushMatrix();
                 gl.glTranslatef(midLength/2, 0.0f, midWidth/4);
                 gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                gl.glRotatef(135.0f, 1.0f, 0.0f, 0.0f);
-                limb(gl, 0.1f, 0.03f, 0.5f);
+                gl.glRotatef(180.0f-state.armAngle, 1.0f, 0.0f, 0.0f);
+                limb(gl, armLength, armThickness, 0.5f);
                 gl.glPushMatrix();
-                    gl.glTranslatef(0.0f, 0.0f, 0.1f);
-                    gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                    limb(gl, 0.05f, 0.015f, 1.0f);
+                    gl.glTranslatef(0.0f, 0.0f, armLength);
+                    gl.glRotatef(state.handAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                    limb(gl, handLength, armThickness/2, 1.0f);
                     gl.glPushMatrix();
-                        gl.glTranslatef(0.0f, 0.0f, 0.05f);
-                        gl.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
-                        appendage(gl, 0.05f, 0.015f, 0.045f);
+                        gl.glTranslatef(0.0f, 0.0f, handLength);
+                        gl.glRotatef(state.palmAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                        appendage(gl, palmLength, armThickness/2, 3*armThickness/2);
                     gl.glPopMatrix();
                 gl.glPopMatrix();
             gl.glPopMatrix();
@@ -98,16 +123,16 @@ public class Frog implements GLEventListener {
             gl.glPushMatrix();
                 gl.glTranslatef(midLength/2, 0.0f, -midWidth/4);
                 gl.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-                gl.glRotatef(135.0f, 1.0f, 0.0f, 0.0f);
-                limb(gl, 0.1f, 0.03f, 0.5f);
+                gl.glRotatef(180.0f-state.armAngle, 1.0f, 0.0f, 0.0f);
+                limb(gl, armLength, armThickness, 0.5f);
                 gl.glPushMatrix();
-                    gl.glTranslatef(0.0f, 0.0f, 0.1f);
-                    gl.glRotatef(-90.0f, 1.0f, 0.0f, 0.0f);
-                    limb(gl, 0.05f, 0.015f, 1.0f);
+                    gl.glTranslatef(0.0f, 0.0f, armLength);
+                    gl.glRotatef(state.handAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                    limb(gl, handLength, armThickness/2, 1.0f);
                     gl.glPushMatrix();
-                        gl.glTranslatef(0.0f, 0.0f, 0.05f);
-                        gl.glRotatef(-45.0f, 1.0f, 0.0f, 0.0f);
-                        appendage(gl, 0.05f, 0.015f, 0.045f);
+                        gl.glTranslatef(0.0f, 0.0f, handLength);
+                        gl.glRotatef(state.palmAngle-180.0f, 1.0f, 0.0f, 0.0f);
+                        appendage(gl, palmLength, armThickness/2, 3*armThickness/2);
                     gl.glPopMatrix();
                 gl.glPopMatrix();
             gl.glPopMatrix();

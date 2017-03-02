@@ -13,8 +13,13 @@ public class Main {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         final GLCanvas glcanvas = new GLCanvas(capabilities);
+
         Frog frog = new Frog();
         glcanvas.addGLEventListener(frog);
+
+        Floor floor = new Floor();
+        //glcanvas.addGLEventListener(floor);
+
         glcanvas.setSize(400, 400);
 
         final JFrame frame = new JFrame ("Frog-Insect");
