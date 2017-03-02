@@ -16,13 +16,13 @@ public class Floor implements GLEventListener {
 
         gl.glColor3f(1.0f, 1.0f, 1.0f);
 
-        float y = -0.15f;
+        float y = -0.087f;
 
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3f(-1.0f, y, -1.0f);
-        gl.glVertex3f(-1.0f, y, 1.0f);
-        gl.glVertex3f(1.0f, y, 1.0f);
-        gl.glVertex3f(1.0f, y, -1.0f);
+        gl.glVertex3f(-10.0f, y, -10.0f);
+        gl.glVertex3f(-10.0f, y, 10.0f);
+        gl.glVertex3f(10.0f, y, 10.0f);
+        gl.glVertex3f(10.0f, y, -10.0f);
         gl.glEnd();
     }
 

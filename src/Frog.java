@@ -29,6 +29,9 @@ public class Frog implements GLEventListener {
     private float legThickness;
 
     private FrogState state;
+    private FrogState diff;
+
+    private int frame;
 
     public Frog() {
         this.length = 0.4f;
@@ -41,8 +44,8 @@ public class Frog implements GLEventListener {
         this.midLength = lengthRatio * this.length;
         this.midWidth = widthRatio * this.width;
 
-        this.armLength = 0.1425f;
-        this.handLength = 0.1f;
+        this.armLength = 0.0895f;
+        this.handLength = 0.05f;
         this.palmLength = 0.05f;
         this.armThickness = 0.03f;
 
@@ -52,6 +55,9 @@ public class Frog implements GLEventListener {
         this.legThickness = 0.04f;
 
         this.state = new FrogState(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        this.diff = new FrogState(1.0f, 0.5f, 0.5f, 300, 0);
+
+        this.frame = 0;
     }
 
     @Override
@@ -59,13 +65,13 @@ public class Frog implements GLEventListener {
         final GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
-        //glu.gluLookAt(-0.5f, 0.15f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(-9.0f, 0.5f, 0.75f, -8.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-        glu.gluLookAt(-0.0f, 0.0f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
         gl.glPushMatrix();
-            gl.glTranslatef(state.posX, 0.0f, state.posY);
+            gl.glTranslatef(state.posX, state.posY, state.posZ);
             gl.glRotatef(state.bodyAngle, 0.0f, 0.0f, 1.0f);
             body(gl);
 
@@ -138,6 +144,10 @@ public class Frog implements GLEventListener {
             gl.glPopMatrix();
 
         gl.glPopMatrix();
+
+        this.frame += 1;
+        if (this.frame <= 150)
+            this.state.add(this.diff, this.frame, 150);
     }
 
     @Override
