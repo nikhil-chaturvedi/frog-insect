@@ -73,9 +73,9 @@ public class Frog implements GLEventListener {
         gl.glLoadIdentity();
         gl.glBindTexture(GL2.GL_TEXTURE_2D, texture);
         //glu.gluLookAt(-9.0f, 0.5f, 0.75f, -8.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-        glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
         gl.glPushMatrix();
             gl.glTranslatef(state.posX, state.posY, state.posZ);
