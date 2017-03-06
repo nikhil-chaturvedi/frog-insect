@@ -58,7 +58,7 @@ public class FrogState {
 
     public void add(FrogState diff, int frame, int frames) {
         this.posX += diff.posX;
-        this.posY += diff.posY * ((Math.sqrt(frame) - Math.sqrt(frame-1))/Math.sqrt(frames));
+        this.posY += diff.posY * ((Math.sqrt(frame) - Math.sqrt(frame-1))/Math.sqrt(frames)); //why?
         //System.out.println(diff.posY * ((Math.sqrt(frame) - Math.sqrt(frame-1))/Math.sqrt(frames)));
         this.posZ += diff.posZ;
 

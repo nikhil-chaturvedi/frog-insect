@@ -19,7 +19,7 @@ public class Main {
         glcanvas.addGLEventListener(frog);
 
         Floor floor = new Floor();
-        //glcanvas.addGLEventListener(floor);
+        glcanvas.addGLEventListener(floor);
 
         glcanvas.setSize(400, 400);
 

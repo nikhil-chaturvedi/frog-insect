@@ -1,12 +1,15 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureIO;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Nikhil on 21/02/17.
  */
-
-
 public class Frog implements GLEventListener {
     private GLU glu = new GLU();
     private GLUquadric qobj;
@@ -32,6 +35,7 @@ public class Frog implements GLEventListener {
     private FrogState diff;
 
     private int frame;
+    private int texture;
 
     public Frog() {
         this.length = 0.4f;
@@ -58,6 +62,8 @@ public class Frog implements GLEventListener {
         this.diff = new FrogState(1.0f, 0.5f, 0.5f, 300, 0);
 
         this.frame = 0;
+
+
     }
 
     @Override
@@ -65,6 +71,7 @@ public class Frog implements GLEventListener {
         final GL2 gl = drawable.getGL().getGL2();
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
+        gl.glBindTexture(GL2.GL_TEXTURE_2D, texture);
         //glu.gluLookAt(-9.0f, 0.5f, 0.75f, -8.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
@@ -183,27 +190,38 @@ public class Frog implements GLEventListener {
 
         qobj = glu.gluNewQuadric();
         glu.gluQuadricNormals(qobj, GLU.GLU_SMOOTH);
+
+        gl.glEnable(GL2.GL_TEXTURE_2D);
+        try{
+
+            File im = new File("C:\\2016-17 Second Sem\\COL781\\frog-insect\\reptiles_texture817.jpg");
+            Texture t = TextureIO.newTexture(im, true);
+            texture= t.getTextureObject(gl);
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
     }
 
     private void body(GL2 gl) {
         gl.glColor3f(0.0f, 1.0f, 0.0f);
 
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3f(length/2, thickness/2, 0.0f);
-        gl.glVertex3f(midLength/2, thickness/2, midWidth/2);
-        gl.glVertex3f(-midLength/2, thickness/2, width/2);
-        gl.glVertex3f(-length/2, thickness/2, 0.0f);
-        gl.glVertex3f(-midLength/2, thickness/2, -width/2);
-        gl.glVertex3f(midLength/2, thickness/2, -midWidth/2);
+        gl.glTexCoord2f(0.25f,0.0f);gl.glVertex3f(length/2, thickness/2, 0.0f);
+        gl.glTexCoord2f(0.075f,0.125f);gl.glVertex3f(midLength/2, thickness/2, midWidth/2);
+        gl.glTexCoord2f(0.0f,0.875f);gl.glVertex3f(-midLength/2, thickness/2, width/2);
+        gl.glTexCoord2f(0.25f,1.0f);gl.glVertex3f(-length/2, thickness/2, 0.0f);
+        gl.glTexCoord2f(0.5f,0.875f);gl.glVertex3f(-midLength/2, thickness/2, -width/2);
+        gl.glTexCoord2f(0.425f,0.125f);gl.glVertex3f(midLength/2, thickness/2, -midWidth/2);
         gl.glEnd();
 
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3f(length/2, -thickness/2, 0.0f);
-        gl.glVertex3f(midLength/2, -thickness/2, midWidth/2);
-        gl.glVertex3f(-midLength/2, -thickness/2, width/2);
-        gl.glVertex3f(-length/2, -thickness/2, 0.0f);
-        gl.glVertex3f(-midLength/2, -thickness/2, -width/2);
-        gl.glVertex3f(midLength/2, -thickness/2, -midWidth/2);
+        gl.glTexCoord2f(0.25f,0.0f);gl.glVertex3f(length/2, -thickness/2, 0.0f);
+        gl.glTexCoord2f(0.075f,0.125f);gl.glVertex3f(midLength/2, -thickness/2, midWidth/2);
+        gl.glTexCoord2f(0.0f,0.875f);gl.glVertex3f(-midLength/2, -thickness/2, width/2);
+        gl.glTexCoord2f(0.25f,1.0f);gl.glVertex3f(-length/2, -thickness/2, 0.0f);
+        gl.glTexCoord2f(0.5f,0.875f);gl.glVertex3f(-midLength/2, -thickness/2, -width/2);
+        gl.glTexCoord2f(0.425f,0.125f);gl.glVertex3f(midLength/2, -thickness/2, -midWidth/2);
         gl.glEnd();
 
         gl.glColor3f(0.0f, 0.5f, 0.0f);
@@ -252,7 +270,7 @@ public class Frog implements GLEventListener {
     }
 
     private void limb(GL2 gl, float height, float thickness, float ratio) {
-        gl.glColor3f(0.0f, 0.75f, 0.0f);
+        gl.glColor3f(0.0f, 0.225f, 0.0f);
         glu.gluCylinder(qobj, thickness/2, (ratio*thickness)/2, height, 40, 40);
     }
 
