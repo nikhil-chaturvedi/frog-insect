@@ -58,8 +58,8 @@ public class Frog implements GLEventListener {
         this.footLength = 0.1f;
         this.legThickness = 0.04f;
 
-        this.state = new FrogState(0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        this.diff = new FrogState(1.0f, 0.5f, 0.5f, 300, 0);
+        this.state = new FrogState(-0.0f, -0.0f, 0.0f, 0.0f, 0.0f);
+        this.diff = new FrogState(0.5f, 1.0f, 0.5f, 200, 0);
 
         this.frame = 0;
 
@@ -73,9 +73,9 @@ public class Frog implements GLEventListener {
         gl.glLoadIdentity();
         gl.glBindTexture(GL2.GL_TEXTURE_2D, texture);
         //glu.gluLookAt(-9.0f, 0.5f, 0.75f, -8.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
-        //glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
         gl.glPushMatrix();
             gl.glTranslatef(state.posX, state.posY, state.posZ);
@@ -153,8 +153,14 @@ public class Frog implements GLEventListener {
         gl.glPopMatrix();
 
         this.frame += 1;
-        if (this.frame <= 150)
-            this.state.add(this.diff, this.frame, 150);
+        if (this.frame <= 100)
+            this.state.add(this.diff, this.frame, 100);
+        else if (this.frame <= 200)
+            this.state.subtract(this.diff, frame-100, 100);
+        else {
+            this.frame = 0;
+            this.state.posX -= 1.0f;
+        }
     }
 
     @Override
@@ -194,7 +200,7 @@ public class Frog implements GLEventListener {
         gl.glEnable(GL2.GL_TEXTURE_2D);
         try{
 
-            File im = new File("C:\\2016-17 Second Sem\\COL781\\frog-insect\\reptiles_texture817.jpg");
+            File im = new File("/Users/Nikhil/Desktop/Sem 8/COL781/frog-insect/reptiles_texture817.jpg");
             Texture t = TextureIO.newTexture(im, true);
             texture= t.getTextureObject(gl);
 
