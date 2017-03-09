@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.texture.TextureIO;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Created by Nikhil on 21/02/17.
@@ -32,9 +33,11 @@ public class Frog implements GLEventListener {
     private float legThickness;
 
     private FrogState state;
-    private FrogState diff;
+    private ArrayList<Keyframe> keyframes;
 
     private int frame;
+    private int jumpState;
+    private int completedJumpFrames;
     private int texture;
 
     public Frog() {
@@ -48,8 +51,10 @@ public class Frog implements GLEventListener {
         this.midLength = lengthRatio * this.length;
         this.midWidth = widthRatio * this.width;
 
-        this.armLength = 0.0895f;
-        this.handLength = 0.05f;
+        //this.armLength = 0.0895f;
+        //this.handLength = 0.05f;
+        this.armLength = 0.1289f;
+        this.handLength = 0.08f;
         this.palmLength = 0.05f;
         this.armThickness = 0.03f;
 
@@ -58,11 +63,12 @@ public class Frog implements GLEventListener {
         this.footLength = 0.1f;
         this.legThickness = 0.04f;
 
-        this.state = new FrogState(-0.0f, -0.0f, 0.0f, 0.0f, 0.0f);
-        this.diff = new FrogState(0.5f, 1.0f, 0.5f, 200, 0);
+        this.state = new FrogState(-0.0f, -0.0f, 0.0f, 1.0f, 0.0f);
+        this.keyframes = Keyframe.populateKeyframes(1.0f, 1.0f);
 
         this.frame = 0;
-
+        this.jumpState = 0;
+        this.completedJumpFrames = 0;
 
     }
 
@@ -72,9 +78,7 @@ public class Frog implements GLEventListener {
         gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
         gl.glLoadIdentity();
         gl.glBindTexture(GL2.GL_TEXTURE_2D, texture);
-        //glu.gluLookAt(-9.0f, 0.5f, 0.75f, -8.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        //glu.gluLookAt(-0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        //gl.glRotatef(180.0f, 1.0f, 0.0f, 0.0f);
+        //glu.gluLookAt(-1.0f, 0.5f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
         glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
         gl.glPushMatrix();
@@ -152,15 +156,23 @@ public class Frog implements GLEventListener {
 
         gl.glPopMatrix();
 
-        this.frame += 1;
-        if (this.frame <= 100)
-            this.state.add(this.diff, this.frame, 100);
-        else if (this.frame <= 200)
-            this.state.subtract(this.diff, frame-100, 100);
-        else {
-            this.frame = 0;
-            this.state.posX -= 1.0f;
+        if (jumpState == -1)
+            return;
+
+        frame += 1;
+        if (frame > completedJumpFrames + keyframes.get(jumpState).getFrames()) {
+            completedJumpFrames += keyframes.get(jumpState).getFrames();
+            jumpState += 1;
+            if (jumpState >= keyframes.size()) {
+                state.posX -= 1.0f;
+                jumpState = 0;
+                completedJumpFrames = 0;
+                this.frame = 0;
+                //jumpState = -1;
+                return;
+            }
         }
+        keyframes.get(jumpState).changeState(state, frame - completedJumpFrames);
     }
 
     @Override
