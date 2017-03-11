@@ -21,6 +21,13 @@ public class Main {
         Floor floor = new Floor();
         //glcanvas.addGLEventListener(floor);
 
+        Unproject unproject = new Unproject();
+        glcanvas.addGLEventListener(unproject);
+        glcanvas.addKeyListener(unproject);
+        glcanvas.addMouseMotionListener(unproject);
+        //glcanvas.requestFocusInWindow();
+
+
         glcanvas.setSize(400, 400);
 
         final JFrame frame = new JFrame ("Frog-Insect");

@@ -212,7 +212,7 @@ public class Frog implements GLEventListener {
         gl.glEnable(GL2.GL_TEXTURE_2D);
         try{
 
-            File im = new File("/Users/Nikhil/Desktop/Sem 8/COL781/frog-insect/reptiles_texture817.jpg");
+            File im = new File("C:\\2016-17 Second Sem\\frog-insect\\reptiles_texture817.jpg");
             Texture t = TextureIO.newTexture(im, true);
             texture= t.getTextureObject(gl);
 
@@ -296,10 +296,10 @@ public class Frog implements GLEventListener {
         gl.glColor3f(0.0f, 1.0f, 0.0f);
 
         gl.glBegin(GL2.GL_POLYGON);
-        gl.glVertex3f(width1/2, 0.0f, 0.0f);
-        gl.glVertex3f(-width1/2, 0.0f, 0.0f);
-        gl.glVertex3f(-width2/2, 0.0f, height);
-        gl.glVertex3f(width2/2, 0.0f, height);
+        gl.glVertex3f(width1 / 2, 0.0f, 0.0f);
+        gl.glVertex3f(-width1 / 2, 0.0f, 0.0f);
+        gl.glVertex3f(-width2 / 2, 0.0f, height);
+        gl.glVertex3f(width2 / 2, 0.0f, height);
         gl.glEnd();
     }
 }
