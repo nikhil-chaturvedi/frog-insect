@@ -86,7 +86,7 @@ public class Unproject
             /*System.out.println("World coords at z=0.0 are ( " //
                     + wcoord[0] + ", " + wcoord[1] + ", " + wcoord[2]
                     + ")");*/
-            glu.gluUnProject((double) x, (double) realy, 1.0, //
+            glu.gluUnProject((double) x, (double) realy, 1, //
                     mvmatrix, 0,
                     projmatrix, 0,
                     viewport, 0,
