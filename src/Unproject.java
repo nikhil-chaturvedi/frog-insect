@@ -54,15 +54,15 @@ public class Unproject
         double intersectX = raySrc[0] + param * rayDir[0];
         double intersectZ = raySrc[2] + param * rayDir[2];
 
-        System.out.println(intersectX + ", " + intersectZ);
+        //System.out.println(intersectX + ", " + intersectZ);
 
         float diffX = (float)intersectX - state.posX;
         float diffZ = (float)intersectZ - state.posZ;
 
         float norm = (float)Math.sqrt(diffX*diffX + diffZ*diffZ);
 
-        state.rotX = diffZ/norm;
-        state.rotZ = diffX/norm;
+        state.rotX = diffX/norm;
+        state.rotZ = -diffZ/norm;
     }
 
     public void display(GLAutoDrawable drawable)
@@ -76,7 +76,13 @@ public class Unproject
             gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mvmatrix, 0);
             gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projmatrix, 0);
   /* note viewport[3] is height of window in pixels */
+
+            if(System.getProperty("os.name").contains("Mac")) {
+                viewport[2] /= 2;
+                viewport[3] /= 2;
+            }
             realy = viewport[3] - (int) y - 1;
+            //System.out.println(viewport[0] + " " + viewport[1] + " " + viewport[2] + " " + viewport[3]);
             //System.out.println("Coordinates at cursor are (" + x + ", " + realy);
             glu.gluUnProject((double) x, (double) realy, 0.0, //
                     mvmatrix, 0,

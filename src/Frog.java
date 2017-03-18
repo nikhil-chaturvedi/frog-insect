@@ -68,7 +68,7 @@ public class Frog implements GLEventListener {
         this.keyframes = Keyframe.populateKeyframes(1.0f * size, 1.0f * size);
 
         this.frame = 0;
-        this.jumpState = -1;
+        this.jumpState = 0;
         this.completedJumpFrames = 0;
 
         this.unproject = unproject;
@@ -85,7 +85,7 @@ public class Frog implements GLEventListener {
         //glu.gluLookAt(-1.0f, 0.25f, 0.75f, 0.0f, 0.25f, 0.0f, 0.0f, 1.0f, 0.0f);
         //glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
 
-        unproject.changeRotation(state);
+        //unproject.changeRotation(state);
 
         gl.glPushMatrix();
             gl.glTranslatef(state.posX, state.posY, state.posZ);
@@ -177,6 +177,7 @@ public class Frog implements GLEventListener {
                 jumpState = 0;
                 completedJumpFrames = 0;
                 this.frame = 0;
+                unproject.changeRotation(state);
                 //jumpState = -1;
                 return;
             }
@@ -313,6 +314,6 @@ public class Frog implements GLEventListener {
     }
 
     private float getAngle(float rotX, float rotZ) {
-        return (float)Math.toDegrees(Math.atan2(rotZ, rotX));
+        return (float)(Math.toDegrees(Math.atan2(rotZ, rotX)));
     }
 }

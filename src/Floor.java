@@ -19,7 +19,7 @@ public class Floor implements GLEventListener {
 
         gl.glColor3f(0.8f, 0.8f, 0.8f);
 
-        float y = 0.0f;
+        float y = -0.0f;
 
         gl.glBegin(GL2.GL_POLYGON);
         gl.glVertex3f(-10.0f, y, -10.0f);
