@@ -12,11 +12,14 @@ public class Floor implements GLEventListener {
     @Override
     public void display(GLAutoDrawable drawable) {
         final GL2 gl = drawable.getGL().getGL2();
-        //gl.glLoadIdentity();
+        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+        gl.glLoadIdentity();
+        //glu.gluLookAt(-1.0f, 0.25f, 0.75f, 0.0f, 0.25f, 0.0f, 0.0f, 1.0f, 0.0f);
+        glu.gluLookAt(-15.0f, 6.0f, 15.0f, 10.0f, -6.0f, -10.0f, 0.0f, 1.0f, 0.0f);
 
-        gl.glColor3f(1.0f, 1.0f, 1.0f);
+        gl.glColor3f(0.8f, 0.8f, 0.8f);
 
-        float y = -0.087f;
+        float y = 0.0f;
 
         gl.glBegin(GL2.GL_POLYGON);
         gl.glVertex3f(-10.0f, y, -10.0f);
@@ -32,7 +35,7 @@ public class Floor implements GLEventListener {
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        /*final GL2 gl = drawable.getGL().getGL2();
+        final GL2 gl = drawable.getGL().getGL2();
         if( height <= 0 )
             height = 1;
 
@@ -43,17 +46,17 @@ public class Floor implements GLEventListener {
 
         glu.gluPerspective( 45.0f, h, 0.1, 100.0 );
         gl.glMatrixMode( GL2.GL_MODELVIEW );
-        gl.glLoadIdentity();*/
+        gl.glLoadIdentity();
     }
 
     @Override
     public void init(GLAutoDrawable drawable) {
-        /*final GL2 gl = drawable.getGL().getGL2();
+        final GL2 gl = drawable.getGL().getGL2();
         gl.glShadeModel( GL2.GL_SMOOTH );
         gl.glClearColor( 0f, 0f, 0f, 0f );
         gl.glClearDepth( 1.0f );
         gl.glEnable( GL2.GL_DEPTH_TEST );
         gl.glDepthFunc( GL2.GL_LEQUAL );
-        gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );*/
+        gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
     }
 }

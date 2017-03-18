@@ -22,12 +22,12 @@ public class Unproject
     //private GLCapabilities caps;
     //private GLCanvas canvas;
     private MouseEvent mouse;
-    int viewport[];
-    double mvmatrix[];
-    double projmatrix[];
-    int realy;// GL y coord pos
-    double wcoord[];// wx, wy, wz;// returned xyz coords
-
+    private int viewport[];
+    private double mvmatrix[];
+    private double projmatrix[];
+    private int realy;// GL y coord pos
+    private double wcoord0[];// wx, wy, wz;// returned xyz coords
+    private double wcoord1[];
 
     public Unproject()
     {
@@ -36,17 +36,9 @@ public class Unproject
         viewport = new int[4];
         mvmatrix = new double[16];
         projmatrix = new double[16];
-        wcoord = new double[4];
+        wcoord0 = new double[4];
+        wcoord1 = new double[4];
         realy=0;
-    }
-    public double getWorldX(){
-        return wcoord[0];
-    }
-    public double getWorldY(){
-        return wcoord[1];
-    }
-    public double getWorldZ(){
-        return wcoord[2];
     }
 
     public void init(GLAutoDrawable drawable)
@@ -55,61 +47,57 @@ public class Unproject
         glu = new GLU();
     }
 
+    public void changeRotation(FrogState state) {
+        double[] raySrc = wcoord0;
+        double[] rayDir = new double[]{wcoord1[0]-wcoord0[0],wcoord1[1]-wcoord0[1],wcoord1[2]-wcoord0[2]};
+        double param = -1.0 * (raySrc[1]/rayDir[1]);
+        double intersectX = raySrc[0] + param * rayDir[0];
+        double intersectZ = raySrc[2] + param * rayDir[2];
+
+        System.out.println(intersectX + ", " + intersectZ);
+
+        float diffX = (float)intersectX - state.posX;
+        float diffZ = (float)intersectZ - state.posZ;
+
+        float norm = (float)Math.sqrt(diffX*diffX + diffZ*diffZ);
+
+        state.rotX = diffZ/norm;
+        state.rotZ = diffX/norm;
+    }
+
     public void display(GLAutoDrawable drawable)
     {
         GL2 gl = drawable.getGL().getGL2();
 
-        //gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-
-
-
         if (mouse != null)
         {
             int x = mouse.getX(), y = mouse.getY();
-            //switch (mouse.getButton()) {
-              //  case MouseEvent.BUTTON1:
-                    gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
-                    gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mvmatrix, 0);
-                    gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projmatrix, 0);
-          /* note viewport[3] is height of window in pixels */
-                    realy = viewport[3] - (int) y - 1;
-                    System.out.println("Coordinates at cursor are (" + x + ", " + realy);
-                    glu.gluUnProject((double) x, (double) realy, 0.0, //
-                            mvmatrix, 0,
-                            projmatrix, 0,
-                            viewport, 0,
-                            wcoord, 0);
-                    System.out.println("World coords at z=0.0 are ( " //
-                            + wcoord[0] + ", " + wcoord[1] + ", " + wcoord[2]
-                            + ")");
-                    glu.gluUnProject((double) x, (double) realy, 1.0, //
-                            mvmatrix, 0,
-                            projmatrix, 0,
-                            viewport, 0,
-                            wcoord, 0);
-                    System.out.println("World coords at z=1.0 are (" //
-                            + wcoord[0] + ", " + wcoord[1] + ", " + wcoord[2]
-                            + ")");
-                //    break;
-                //case MouseEvent.BUTTON2:
-                 //   break;
-                //default:
-                  //  break;
-            //}
+            gl.glGetIntegerv(GL.GL_VIEWPORT, viewport, 0);
+            gl.glGetDoublev(GL2.GL_MODELVIEW_MATRIX, mvmatrix, 0);
+            gl.glGetDoublev(GL2.GL_PROJECTION_MATRIX, projmatrix, 0);
+  /* note viewport[3] is height of window in pixels */
+            realy = viewport[3] - (int) y - 1;
+            //System.out.println("Coordinates at cursor are (" + x + ", " + realy);
+            glu.gluUnProject((double) x, (double) realy, 0.0, //
+                    mvmatrix, 0,
+                    projmatrix, 0,
+                    viewport, 0,
+                    wcoord0, 0);
+            /*System.out.println("World coords at z=0.0 are ( " //
+                    + wcoord[0] + ", " + wcoord[1] + ", " + wcoord[2]
+                    + ")");*/
+            glu.gluUnProject((double) x, (double) realy, 1.0, //
+                    mvmatrix, 0,
+                    projmatrix, 0,
+                    viewport, 0,
+                    wcoord1, 0);
         }
-
-        //gl.glFlush();
     }
 
     /* Change these values for a different transformation */
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height)
     {
 
-    }
-
-    public void displayChanged(GLAutoDrawable drawable, boolean modeChanged,
-                               boolean deviceChanged)
-    {
     }
 
     public void dispose(GLAutoDrawable autoDrawable){}
@@ -136,10 +124,6 @@ public class Unproject
     {
     }
 
-    public void mouseClicked(MouseEvent e)
-    {
-    }
-
     public void mousePressed(MouseEvent e)
     {
         mouse = e;
@@ -151,17 +135,6 @@ public class Unproject
 
     public void mouseDragged(MouseEvent e) {
 
-    }
-    public void mouseReleased(MouseEvent e)
-    {
-    }
-
-    public void mouseEntered(MouseEvent e)
-    {
-    }
-
-    public void mouseExited(MouseEvent e)
-    {
     }
 
 }

@@ -85,7 +85,7 @@ public class Keyframe {
 
     public void changeState(FrogState state, int frame) {
         state.posX += state.rotX * dist.changeValue(frame);
-        state.posZ += state.rotZ * dist.changeValue(frame);
+        state.posZ += (-state.rotZ) * dist.changeValue(frame);
         state.posY += height.changeValue(frame);
 
         state.bodyAngle += this.bodyAngle.changeValue(frame);

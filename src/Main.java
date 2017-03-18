@@ -14,14 +14,14 @@ public class Main {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         final GLCanvas glcanvas = new GLCanvas(capabilities);
-
-        Frog frog = new Frog();
-        glcanvas.addGLEventListener(frog);
+        Unproject unproject = new Unproject();
 
         Floor floor = new Floor();
-        //glcanvas.addGLEventListener(floor);
+        glcanvas.addGLEventListener(floor);
 
-        Unproject unproject = new Unproject();
+        Frog frog = new Frog(3.0f, unproject);
+        glcanvas.addGLEventListener(frog);
+
         glcanvas.addGLEventListener(unproject);
         glcanvas.addKeyListener(unproject);
         glcanvas.addMouseMotionListener(unproject);

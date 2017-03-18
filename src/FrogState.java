@@ -35,15 +35,5 @@ public class FrogState {
         this.legAngle = 30.0f;
         this.thighAngle = 30.0f;
         this.footAngle = 15.0f;
-
-        /*this.bodyAngle = 10.0f;
-
-        this.armAngle = 50.0f;
-        this.handAngle = 105.0f;
-        this.palmAngle = 135.0f;
-
-        this.legAngle = 20.0f;
-        this.thighAngle = 20.0f;
-        this.footAngle = 10.0f;*/
     }
 }

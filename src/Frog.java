@@ -1,6 +1,7 @@
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUquadric;
+import com.jogamp.opengl.math.VectorUtil;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 
@@ -40,10 +41,12 @@ public class Frog implements GLEventListener {
     private int completedJumpFrames;
     private int texture;
 
-    public Frog() {
-        this.length = 0.4f;
-        this.width = 0.2f;
-        this.thickness = 0.07f;
+    private Unproject unproject;
+
+    public Frog(float size, Unproject unproject) {
+        this.length = 0.4f * size;
+        this.width = 0.2f * size;
+        this.thickness = 0.07f * size;
 
         final float lengthRatio = 0.75f;
         final float widthRatio = 0.7f;
@@ -51,38 +54,42 @@ public class Frog implements GLEventListener {
         this.midLength = lengthRatio * this.length;
         this.midWidth = widthRatio * this.width;
 
-        //this.armLength = 0.0895f;
-        //this.handLength = 0.05f;
-        this.armLength = 0.1289f;
-        this.handLength = 0.08f;
-        this.palmLength = 0.05f;
-        this.armThickness = 0.03f;
+        this.armLength = 0.1289f * size;
+        this.handLength = 0.08f * size;
+        this.palmLength = 0.05f * size;
+        this.armThickness = 0.03f * size;
 
-        this.legLength = 0.2f;
-        this.thighLength = 0.15f;
-        this.footLength = 0.1f;
-        this.legThickness = 0.04f;
+        this.legLength = 0.2f * size;
+        this.thighLength = 0.15f * size;
+        this.footLength = 0.1f * size;
+        this.legThickness = 0.04f * size;
 
-        this.state = new FrogState(-0.0f, -0.0f, 0.0f, 1.0f, 0.0f);
-        this.keyframes = Keyframe.populateKeyframes(1.0f, 1.0f);
+        this.state = new FrogState(-9.0f, 0.1295f * size, 9.0f, 0.707f, 0.707f);
+        this.keyframes = Keyframe.populateKeyframes(1.0f * size, 1.0f * size);
 
         this.frame = 0;
-        this.jumpState = 0;
+        this.jumpState = -1;
         this.completedJumpFrames = 0;
+
+        this.unproject = unproject;
 
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         final GL2 gl = drawable.getGL().getGL2();
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
-        gl.glLoadIdentity();
+        //gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT );
+        //gl.glLoadIdentity();
+        gl.glEnable(GL2.GL_TEXTURE_2D);
         gl.glBindTexture(GL2.GL_TEXTURE_2D, texture);
-        //glu.gluLookAt(-1.0f, 0.5f, 0.75f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
-        glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(-1.0f, 0.25f, 0.75f, 0.0f, 0.25f, 0.0f, 0.0f, 1.0f, 0.0f);
+        //glu.gluLookAt(1.0f, 0.0f, 3.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f);
+
+        unproject.changeRotation(state);
 
         gl.glPushMatrix();
             gl.glTranslatef(state.posX, state.posY, state.posZ);
+            gl.glRotatef(getAngle(state.rotX, state.rotZ), 0.0f, 1.0f, 0.0f);
             gl.glRotatef(state.bodyAngle, 0.0f, 0.0f, 1.0f);
             body(gl);
 
@@ -156,6 +163,8 @@ public class Frog implements GLEventListener {
 
         gl.glPopMatrix();
 
+        gl.glDisable(GL2.GL_TEXTURE_2D);
+
         if (jumpState == -1)
             return;
 
@@ -164,7 +173,7 @@ public class Frog implements GLEventListener {
             completedJumpFrames += keyframes.get(jumpState).getFrames();
             jumpState += 1;
             if (jumpState >= keyframes.size()) {
-                state.posX -= 1.0f;
+                state.posX -= 0.0f;
                 jumpState = 0;
                 completedJumpFrames = 0;
                 this.frame = 0;
@@ -182,7 +191,7 @@ public class Frog implements GLEventListener {
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
-        final GL2 gl = drawable.getGL().getGL2();
+        /*final GL2 gl = drawable.getGL().getGL2();
         if( height <= 0 )
         height = 1;
 
@@ -193,18 +202,18 @@ public class Frog implements GLEventListener {
 
         glu.gluPerspective( 45.0f, h, 0.1, 100.0 );
         gl.glMatrixMode( GL2.GL_MODELVIEW );
-        gl.glLoadIdentity();
+        gl.glLoadIdentity();*/
     }
 
     @Override
     public void init(GLAutoDrawable drawable) {
         final GL2 gl = drawable.getGL().getGL2();
-        gl.glShadeModel( GL2.GL_SMOOTH );
+        /*gl.glShadeModel( GL2.GL_SMOOTH );
         gl.glClearColor( 0f, 0f, 0f, 0f );
         gl.glClearDepth( 1.0f );
         gl.glEnable( GL2.GL_DEPTH_TEST );
         gl.glDepthFunc( GL2.GL_LEQUAL );
-        gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );
+        gl.glHint( GL2.GL_PERSPECTIVE_CORRECTION_HINT, GL2.GL_NICEST );*/
 
         qobj = glu.gluNewQuadric();
         glu.gluQuadricNormals(qobj, GLU.GLU_SMOOTH);
@@ -212,7 +221,7 @@ public class Frog implements GLEventListener {
         gl.glEnable(GL2.GL_TEXTURE_2D);
         try{
 
-            File im = new File("C:\\2016-17 Second Sem\\frog-insect\\reptiles_texture817.jpg");
+            File im = new File("reptiles_texture817.jpg");
             Texture t = TextureIO.newTexture(im, true);
             texture= t.getTextureObject(gl);
 
@@ -301,5 +310,9 @@ public class Frog implements GLEventListener {
         gl.glVertex3f(-width2 / 2, 0.0f, height);
         gl.glVertex3f(width2 / 2, 0.0f, height);
         gl.glEnd();
+    }
+
+    private float getAngle(float rotX, float rotZ) {
+        return (float)Math.toDegrees(Math.atan2(rotZ, rotX));
     }
 }
