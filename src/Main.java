@@ -19,8 +19,15 @@ public class Main {
         Floor floor = new Floor();
         glcanvas.addGLEventListener(floor);
 
-        Frog frog = new Frog(3.0f, unproject);
+        InsectState insectState = new InsectState(0.0f, 0.0f);
+        Insect insect = new Insect(0.1f, insectState, unproject);
+        glcanvas.addGLEventListener(insect);
+
+        Frog frog = new Frog(3.0f, -9.0f, 9.0f, insectState, unproject);
         glcanvas.addGLEventListener(frog);
+
+        //Frog frog2 = new Frog(3.0f, 9.0f, 9.0f, insectState, unproject);
+        //glcanvas.addGLEventListener(frog2);
 
         glcanvas.addGLEventListener(unproject);
         glcanvas.addKeyListener(unproject);

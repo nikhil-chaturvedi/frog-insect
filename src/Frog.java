@@ -34,6 +34,7 @@ public class Frog implements GLEventListener {
     private float legThickness;
 
     private FrogState state;
+    private InsectState insectState;
     private ArrayList<Keyframe> keyframes;
 
     private int frame;
@@ -43,7 +44,7 @@ public class Frog implements GLEventListener {
 
     private Unproject unproject;
 
-    public Frog(float size, Unproject unproject) {
+    public Frog(float size, float posX, float posZ, InsectState insectState, Unproject unproject) {
         this.length = 0.4f * size;
         this.width = 0.2f * size;
         this.thickness = 0.07f * size;
@@ -64,13 +65,14 @@ public class Frog implements GLEventListener {
         this.footLength = 0.1f * size;
         this.legThickness = 0.04f * size;
 
-        this.state = new FrogState(-9.0f, 0.1295f * size, 9.0f, 0.707f, 0.707f);
+        this.state = new FrogState(posX, 0.1295f * size, posZ, 0.707f, 0.707f);
         this.keyframes = Keyframe.populateKeyframes(1.0f * size, 1.0f * size);
 
         this.frame = 0;
         this.jumpState = 0;
         this.completedJumpFrames = 0;
 
+        this.insectState = insectState;
         this.unproject = unproject;
 
     }
@@ -177,7 +179,7 @@ public class Frog implements GLEventListener {
                 jumpState = 0;
                 completedJumpFrames = 0;
                 this.frame = 0;
-                unproject.changeRotation(state);
+                changeRotation();
                 //jumpState = -1;
                 return;
             }
@@ -311,6 +313,16 @@ public class Frog implements GLEventListener {
         gl.glVertex3f(-width2 / 2, 0.0f, height);
         gl.glVertex3f(width2 / 2, 0.0f, height);
         gl.glEnd();
+    }
+
+    public void changeRotation() {
+        float diffX = (float)insectState.posX - state.posX;
+        float diffZ = (float)insectState.posZ - state.posZ;
+
+        float norm = (float)Math.sqrt(diffX*diffX + diffZ*diffZ);
+
+        state.rotX = diffX/norm;
+        state.rotZ = -diffZ/norm;
     }
 
     private float getAngle(float rotX, float rotZ) {

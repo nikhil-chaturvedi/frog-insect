@@ -65,6 +65,26 @@ public class Unproject
         state.rotZ = -diffZ/norm;
     }
 
+    public void changeInsect(InsectState state) {
+        double[] raySrc = wcoord0;
+        double[] rayDir = new double[]{wcoord1[0]-wcoord0[0],wcoord1[1]-wcoord0[1],wcoord1[2]-wcoord0[2]};
+        double param = -1.0 * (raySrc[1]/rayDir[1]);
+        double intersectX = raySrc[0] + param * rayDir[0];
+        double intersectZ = raySrc[2] + param * rayDir[2];
+
+        //System.out.println(state.posX + ", " + state.posZ);
+
+        float diffX = (float)intersectX - state.posX;
+        float diffZ = (float)intersectZ - state.posZ;
+
+        float norm = (float)Math.sqrt(diffX*diffX + diffZ*diffZ);
+
+        float tolerance = 0.01f;
+
+        state.rotX = (Math.abs(diffX) < tolerance)? 0.0f : diffX/norm;
+        state.rotZ = (Math.abs(diffZ) < tolerance)? 0.0f : diffZ/norm;
+    }
+
     public void display(GLAutoDrawable drawable)
     {
         GL2 gl = drawable.getGL().getGL2();
